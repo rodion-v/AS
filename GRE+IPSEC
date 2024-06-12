@@ -72,6 +72,8 @@ cat /etc/ipsec.secrets (router 1 and 2)
 100.10.10.10 200.20.20.10 : PSK "BubbleGum"
 
 ###################################################################################
+systemctl restart ipsec (systemctl enable ipsec --now)
+###################################################################################
 
 #For triple router conf:
 cat /etc/ipsec.conf (on central router, which connects to another routers)
