@@ -1,0 +1,66 @@
+apt install frr
+nano /etc/frr/daemons (enable ospfd by uncomment line)
+
+#######################
+cat /etc/frr/frr.conf
+frr version 8.4.4
+frr defaults traditional
+hostname rtr-data1.info.sec
+log syslog informational
+no ipv6 forwarding
+service integrated-vtysh-config
+!
+interface enp1s0
+ ip ospf passive
+exit
+!
+interface tun111
+ no ip ospf passive
+exit
+!
+interface tun222
+ no ip ospf passive
+exit
+!
+router ospf
+ passive-interface default
+ network 10.1.1.0/30 area 0
+ network 10.5.5.0/30 area 0
+ network 10.200.100.0/24 area 0
+ network 172.16.100.0/24 area 0
+ network 192.168.100.0/24 area 0
+exit
+!
+
+#######################
+systemctl restart frr
+#######################
+cat /etc/nftables.conf
+
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+        chain input {
+                type filter hook input priority filter;
+        }
+        chain forward {
+                type filter hook forward priority filter;
+        }
+        chain output {
+                type filter hook output priority filter;
+        }
+}
+
+table ip nat {
+        chain postrouting {
+        type nat hook postrouting priority 0;
+        ip saddr 0.0.0.0/0 oifname enp1s0 counter masquerade;
+}
+}
+
+#######################
+echo net.ipv4.ip_forward=1>>/etc/sysctl.conf
+sysctl -p
+nft -f /etc/nftables.conf
