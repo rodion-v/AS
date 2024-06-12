@@ -1,0 +1,28 @@
+apt install lvm2 cryptsetup
+
+pvcreate /dev/vdb1 /dev/vdc1
+
+cryptsetup luksFormat /dev/vdb1
+cryptsetup luksFormat /dev/vdc1
+crypsetup open /dev/sdb cryptlvm
+crypsetup open /dev/sdc cryptlvm2
+
+vgcreate Vol2 /dev/mapper/cryptlvm /dev/mapper/cryptlvm2
+lvcreate -l 100%FREE Storage Vol2
+mkfs.ext4 /dev/mapper/Vol2-Storage
+
+lsblk -f
+
+dd if=/dev/urandom of=/etc/secretkey bs=512 count=4
+cryptsetup luksAddKey /dev/vdb1 /etc/secretkey
+cryptsetup luksAddKey /dev/vdc1 /etc/secretkey
+
+  
+cat /etc/crypttab  (use blkid >> /etc/crypttab to copy UUIDs)
+vdb1_crypt UUID=2a2375bf-2262-413c-a6a8-fbeb14659c81 /etc/secretkey luks,discard
+vdc1_crypt UUID=2a2375bf-2262-413c-a6a8-fbeb14659c82 /etc/secretkey luks,discard
+
+
+cat /etc/fstab
+...
+/dev/mapper/Vol2-Storage /opt/datacrypt ext4 defaults 0 0
