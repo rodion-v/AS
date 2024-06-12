@@ -1,40 +1,26 @@
-#Stronswan realization ipsec tunneling
+#Stronswan realization ipsec tunneling (router 1 WAN ip - 100.10.10.10, router 2 WAN ip - 200.20.20.10)
 apt install strongswan
 
-
-cat /etc/gre.up (router1)
-#!/bin/bash
-ip tunnel add tun222 mode gre local 200.20.20.10 remote 100.10.10.10 ttl 64
-ip link set tun222 up
-ip addr add 10.5.5.1/30 dev tun222
-
+###################################################################################
 
 cat /etc/gre.up (router2)
 #!/bin/bash
 ip tunnel add tun222 mode gre local 100.10.10.10 remote 200.20.20.10 ttl 64
 ip link set tun222 up
+ip addr add 10.5.5.1/30 dev tun222
+
+###################################################################################
+
+cat /etc/gre.up (router1)
+#!/bin/bash
+ip tunnel add tun222 mode gre local 200.20.20.10 remote 100.10.10.10 ttl 64
+ip link set tun222 up
 ip addr add 10.5.5.2/30 dev tun222
 
+###################################################################################
 echo  '@reboot root /etc/gre.up' >> /etc/crontab
 
-cat /etc/ipsec.conf (router1)
-# ipsec.conf - strongSwan IPsec configuration file
-# basic configuration
-config setup
-        # strictcrlpolicy=yes
-        # uniqueids = no
-conn vpn
-        auto=start
-        type=tunnel
-        authby=secret
-        left=200.20.20.10
-        right=100.10.10.10
-        leftsubnet=0.0.0.0/0
-        rightsubnet=0.0.0.0/0
-        leftprotoport=gre
-        rightprotoport=gre
-        ike=aes128-sha256-modp3072
-        esp=aes128-sha256
+###################################################################################
 
 cat /etc/ipsec.conf (router1)
 # ipsec.conf - strongSwan IPsec configuration file
@@ -55,6 +41,29 @@ conn vpn
         ike=aes128-sha256-modp3072
         esp=aes128-sha256
 
+###################################################################################
+
+cat /etc/ipsec.conf (router2)
+# ipsec.conf - strongSwan IPsec configuration file
+# basic configuration
+config setup
+        # strictcrlpolicy=yes
+        # uniqueids = no
+conn vpn
+        auto=start
+        type=tunnel
+        authby=secret
+        left=200.20.20.10
+        right=100.10.10.10
+        leftsubnet=0.0.0.0/0
+        rightsubnet=0.0.0.0/0
+        leftprotoport=gre
+        rightprotoport=gre
+        ike=aes128-sha256-modp3072
+        esp=aes128-sha256
+
+###################################################################################
+
 cat /etc/ipsec.secrets (router 1 and 2)
 # This file holds shared secrets or RSA private keys for authentication.
 
@@ -62,4 +71,43 @@ cat /etc/ipsec.secrets (router 1 and 2)
 # which knows the public part.
 100.10.10.10 200.20.20.10 : PSK "BubbleGum"
 
+###################################################################################
 
+#For triple router conf:
+cat /etc/ipsec.conf (on central router, which connects to another routers)
+# ipsec.conf - strongSwan IPsec configuration file
+
+# basic configuration
+
+config setup
+        # strictcrlpolicy=yes
+        # uniqueids = no
+conn vpn
+        auto=start
+        type=tunnel
+        authby=secret
+        left=100.10.10.10
+        right=200.20.20.10
+        leftsubnet=192.168.100.0/24,172.16.100.0/24,10.200.100.0/24
+        rightsubnet=10.15.10.0/24,10.20.10.0/24
+        leftprotoport=gre
+        rightprotoport=gre
+        ike=aes128-sha256-modp3072
+        esp=aes128-sha256
+
+conn vpn1
+        auto=start
+        type=tunnel
+        authby=secret
+        left=100.10.10.10
+        right=9.9.9.10
+        leftsubnet=192.168.100.0/24,172.16.100.0/24,10.200.100.0/24
+        rightsubnet=10.10.100.0/24, 10.20.100.0/24
+        leftprotoport=gre
+        rightprotoport=gre
+        ike=aes128-sha256-modp3072
+        esp=aes128-sha256
+
+cat /etc/ipsec.secrets 
+100.10.10.10 200.20.20.10 : PSK "BubbleGum"
+100.10.10.10 9.9.9.10 : PSK "BubbleGum"
