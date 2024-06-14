@@ -1,0 +1,7 @@
+systemctls status bind9-pkcs11  - status  & logs of default name service process
+ipa-getcert list (listing request)
+ipa-getcert request -r -f /opt/cert1.crt -k /opt/cert1.key -N CN=www.rv.net -D www.rv.net -K HTTP/www.rv.net
+
+#Mozilla auth fix:
+rm /usr/lib/firefox/libnssckbi.so && ln -s /usr/lib/x86_64-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
+
