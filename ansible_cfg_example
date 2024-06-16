@@ -1,0 +1,104 @@
+#make default cfg:
+ansible-config init --disabled -t all > ansible.cfg
+#syntax cheking:
+ansible-playbook playbook.yml --syntax-check 
+########################################
+Configs
+########################################
+~/Ansible]
+└─$ ls                  
+ansible.cfg  hosts.ini  playbook.yml  roles
+########################################
+cat ansible.cfg 
+[defaults]
+
+inventory = ./hosts.ini
+remote_user = sshuser
+#ask_pass = True
+########################################
+cat hosts.ini                                 
+[local]
+127.0.0.1
+[local:vars]
+ansible_ssh_user=sshuser
+ansible_ssh_pass=WeAtHeR_HoT
+#ansible_become_user=sshuser
+ansible_become_method=sudo
+ansible_become_password= WeAtHeR_HoT
+########################################
+cat playbook.yml 
+- hosts: all
+  gather_facts: yes
+  become: true
+  vars:
+    become_method: sudo
+  roles:
+    - role: touch
+    - role: service
+    - role: sysctl
+########################################
+└─$ tree roles
+roles
+├── service
+│   ├── README.md
+│   ├── defaults
+│   │   └── main.yml
+│   ├── files
+│   ├── handlers
+│   │   └── main.yml
+│   ├── meta
+│   │   └── main.yml
+│   ├── tasks
+│   │   └── main.yml
+│   ├── templates
+│   ├── tests
+│   │   ├── inventory
+│   │   └── test.yml
+│   └── vars
+│       └── main.yml
+├── sysctl
+│   ├── handlers
+│   │   └── main.yml
+│   └── tasks
+│       └── main.yml
+└── touch
+    ├── files
+    └── tasks
+        ├── main.yml
+        └── touch
+########################################
+cat roles/sysctl/tasks/main.yml
+- name: Ensure forwarding is set to enable
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^net.ipv4.ip_forward='
+    line: net.ipv4.ip_forward=1
+  notify:
+    - apply_changes
+########################################
+cat roles/sysctl/handlers/main.yml 
+---
+- name: apply_changes
+  command: sysctl -p
+########################################
+cat roles/touch/tasks/main.yml    
+---
+# tasks file for copy
+- name: Copy a new "touch" file into place, backing up the original if it differs from the copied version
+  copy:
+    src: touch
+    dest: /tmp/touch
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+    ignore_errors: true
+########################################
+cat roles/service/tasks/main.yml  
+---
+- name: Systemctl Avahi daemon Start
+  systemd:
+    name: avahi-daemon
+    state: started
+    enabled: yes
+########################################
