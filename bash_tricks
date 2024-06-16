@@ -1,0 +1,35 @@
+#conditions: https://github.com/hightemp/docLinux/tree/master/articles
+
+if [[ -e "file.txt" ]]; then
+  echo "file exists"
+fi
+
+if(( $i %2 != 0 )); then
+ echo "parity!"
+ 
+if [[ -z "$string" ]]; then
+  echo "String is empty"
+elif [[ -n "$string" ]]; then
+  echo "String is not empty"
+fi
+
+for i in {1..24}; do echo check "$i for parity" && if (( $i %2 == 0)) echo "number $i parity check done"  ; done
+for i in /etc/rc.*; do
+  echo $i
+done
+
+for ((i = 0 ; i < 100 ; i++)); do
+  echo $i
+done
+
+for i in {1..5}; do
+    echo "Welcome $i"
+done
+
+#!/bin/bash
+cat <<END
+hello world
+here 2 strings after
+one
+two
+END
