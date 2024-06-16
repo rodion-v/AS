@@ -16,3 +16,74 @@ ipa group-add-member group_name --external='ad_user@AD_DOMAIN'
 ipa group-add-member group_name --external='ad_user@AD_DOMAIN.EXAMPLE.COM'
 
 https://sidmid.ru/%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0-openvpn-freeipa-ldap/
+
+
+
+
+## EASYRSA
+Полный путь от установки и до получения готового серта без объяснений. Только команды:
+```
+apt update
+apt install easy-rsa -y
+cd /usr/share/easy-rsa/
+./easyrsa --pki-dir=/etc/ca init-pki
+./easyrsa --pki-dir=/etc/ca build-ca nopass
+./easyrsa --pki-dir=/etc/ca build-server-full zabbix.rv.ru nopass
+```
+
+## Установка центра сертификации
+
+Центр сертификации делается при помощи пакета `easy-rsa`
+Устанавливаем его: 
+
+```
+apt update
+apt install easy-rsa -y
+```
+Далее переходим в папку `/usr/share/easy-rsa` и работаем там.
+```
+cd /usr/share/easy-rsa/
+```
+
+## Ввод в эксплуатацию вашего центра сертификации
+**ВНИМАНИЕ!!! Если забыли команды, то находясь в папке `easy-rsa` пишем команду `./easyrsa` и получаем крутой help**
+```
+root@cr-srv:~/easy-rsa# ./easyrsa
+
+
+
+Приступим к конфигурированию центра сертификации.
+```
+./easyrsa --pki-dir=/etc/ca init-pki
+./easyrsa --pki-dir=/etc/ca build-ca nopass
+```
+*Примечение! параметр nopass необходим для создания сертификата без ключа*
+
+Не забываев ввести название нашего ЦА 
+```
+Common Name (eg: your user, host, or server name) [Easy-RSA CA]:REA2024-CA
+```
+
+
+### Выпуск сертов
+1. Первый способ: 
+Находясь в папке `/usr/share/easy-rsa` выполняем команду: 
+```
+./easyrsa --pki-dir=/etc/ca build-server-full zabbix.rv.ru nopass
+```
+отвечаем `yes` и забираем свежевыпущеный серт по пути: `/etc/ca/issued/zabbix.rv.ru.crt`
+далее меняем `zabbix.rv.ru` на нужные доменные имена и выпускаем новые серты.
+
+
+2. Второй способ: 
+выпуск одного сертификата сразу на все возможные доменные имена:
+```
+./easyrsa --pki-dir=/etc/ca --subject-alt-name="DNS:one.domain.local,DNS:two.domain.local" build-server-full altname nopass
+```
+Тут соотвественно: 
+- `--subject-alt-name=` перечисляем все возможные доменные имена. Главное не налажать с синтаксисом. `"DNS:какойто.домен.ру,DNS:еще.домен.ру"`
+- `altname` имя сертификата(файла). любой текст. 
+забираем свежевыпущеный серт по пути: `/etc/ca/issued/altname.crt`
+
+
+ipa-getcert request -r -f /opt/cert1.crt -k /opt/cert1.key -N CN=www.info.sec -D www.info.sec -K HTTP/www.info.sec
