@@ -102,7 +102,7 @@ conn vpn1
         type=tunnel
         authby=secret
         left=100.10.10.10
-        right=9.9.9.10
+        right=100.10.1.10
         leftsubnet=192.168.100.0/24,172.16.100.0/24,10.200.100.0/24
         rightsubnet=10.10.100.0/24, 10.20.100.0/24
         leftprotoport=gre
@@ -112,4 +112,4 @@ conn vpn1
 
 cat /etc/ipsec.secrets 
 100.10.10.10 200.20.20.10 : PSK "BubbleGum"
-100.10.10.10 9.9.9.10 : PSK "BubbleGum"
+100.10.10.10 100.10.1.10 : PSK "BubbleGum"
