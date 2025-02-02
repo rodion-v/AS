@@ -10,15 +10,18 @@ deb https://dl.astralinux.ru/astra/frozen/1.7_x86-64/1.7.3/uu/2/repository-exten
 
 #2. packages
 apt update && apt upgrade -y && apt install freeipa-server haveged freeipa-server-dns dogtag-pki -y 
-
+#fix astra mode
+echo "AstraMode off" >> /etc/apache2/apache2.conf 
 ---
 
-#.3 DNS settings
+#.3 DNS settings & previos install fix
 #grep dc1 /etc/host*
 /etc/hostname:dc1.reaskills.cyber
 /etc/hosts:172.16.50.1 dc1.reaskills.cyber dc1
 #cat /etc/resolv.conf 
 nameserver 127.0.0.1
+#remove old cert:
+rm /etc/ipa/ca.crt
 
 ---
 
