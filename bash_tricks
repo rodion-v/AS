@@ -177,6 +177,24 @@ echo -e "SSHD : 10.0.0.0/8\nSSHD : 192.168.0.0/16">> /etc/hosts.allow
 echo PasswordAuthentication no>> /etc/ssh/sshd_config  && systemctl restart sshd
  
 
+-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQC82CYllRN0zr2SRrilY9q0bdLuTscCblY8JI42OZ1AVHHnz7Cy
+MhUa4tUKfNTGvk84AmOlu2mkCZOXjhJzFCrm0qG57BNtltLA2IDwSxxc8AQelTko
+DbKUyo21o/bJK+16szdeyVkkCXh8tstfJjFQgosGBObEh80Jt9j9E3TwaQIDAQAB
+AoGAS3LwisNs6pZPF0o6K5ohn0ThqWTADjCXM6BHUVLjiPg0KjHInulzlTJbe700
+JdOTQwVxWp3uLyPEXCDfLis4mB+07j7yz2jxoFmJBpyuAmcjRPhjPbfSZjATSMbA
+CyYoU0nxEpb/cC9/zuuno0dNzlaN2nW4QRlSVMDF9ecWwyECQQDyjLgPMBg56MtQ
+cwssmlgnj3ZgWXHGSU0Sgzs9sadyo6gNxEOUBiesKmUgBgucZDms9s9eddl/ctZE
+Jt45TEeTAkEAx1EEzA+yozg9iYbkrByA8HJZQEqSvTP03UHYtS6CQnHa6jyftHuq
+e6cd+AHMKEFrQ75wpro3vy/ntXLbYYEtkwJBANz7AhKsUdYo11vThMG9WUWpukMs
+GrF6RSLxtz6NJi8XFdx9DMjHFswP0BRuDZQN6FJCh0nbey5XtQlglCSF78sCQEq0
+v0uNBrPOvKHzgXpRJLL66SED0oRAGSNlLsiaKhClhBwPpPyM7ZVzSfRPGCpuernl
+g2u6mHJ8jiigaEHfnSkCQBEUdHA3bvGaR4yDm5HQf+OdB3QlqLZf5fvjTemFwGpB
+iiQT5uGp8spNyJ/s2NQLO0JomcU8D6g+Q2YFmY7iZEY=
+-----END RSA PRIVATE KEY-----
+
+pub:
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQC82CYllRN0zr2SRrilY9q0bdLuTscCblY8JI42OZ1AVHHnz7CyMhUa4tUKfNTGvk84AmOlu2mkCZOXjhJzFCrm0qG57BNtltLA2IDwSxxc8AQelTkoDbKUyo21o/bJK+16szdeyVkkCXh8tstfJjFQgosGBObEh80Jt9j9E3TwaQ== cod_admin
 
 
 
