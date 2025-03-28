@@ -195,6 +195,8 @@ echo "cod_admin ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/cod_admin
 
 #NOTES
 https://github.com/Collective-Software/ClickPaste
+pass 123
+$1$VNIzfC35$BfmuXCMFCQH4NggrlFpUS.
 
 
 
